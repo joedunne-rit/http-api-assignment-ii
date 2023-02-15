@@ -7,18 +7,30 @@
   <script>
     let nameForm;
     let userForm;
+    let content;
 
     const init = () => {
       nameForm = document.querySelector('#nameForm');
       userForm = document.querySelector('#userForm');
+      content = document.querySelector('#content');
+
+      nameForm.addEventListener('submit', addUser);
+      userForm.addEventListener('submit', getUser);
     }
 
     const addUser = () => {
 
     }
 
-    const getUser = () => {
+    const getUser = async () => {
+      const url = userForm.querySelector('#userField').value;
+      const method = userForm.querySelector('#methodSelect').value;
 
+      let response = await fetch(url, {
+        method
+      });
+
+      //Handle response
     }
 
     window.onload = init;
