@@ -18,54 +18,16 @@
       userForm.addEventListener('submit', getUser);
     }
 
-    const addUser = async () => {
-      const userName = nameForm.querySelector('#nameField').value;
-      const userAge = nameForm.querySelector('#ageField').value;
-      const userData = `name=${userName}&age=${userAge}`;
-
-      const methodName = nameForm.getAttribute('method');
-      const url = nameForm.getAttribute('action')
-      let resposne = await fetch(url, {
-        method: methodName,
-        body: userData,
-      });
-
-      //Handle response
-      updateStatus(response.status);
-
-      let obj = await response.json;
-
-      if(obj.message){
-        content.innerhtml += `<div>${obj.message}</div>`;
-      }
-    }
-
-    const getUser = async () => {
-      const url = userForm.querySelector('#userField').value;
-      const method = userForm.querySelector('#methodSelect').value;
-
-      let response = await fetch(url, {
-        method,
-      });
-
-      //Handle response
-      updateStatus(response.status);
-      let obj = await response.json
-      if(obj){
-        content.innerhtml += `<div>${obj}</div>`;
-      }
-    }
-
     const updateStatus = (status) => {
       switch(status){
         case 200:
-          content.innerhtml = '<h1>Success</h1>';
+          content.innerHTML = '<h1>Success</h1>';
           break;
         case 201:
-          content.innerhtml = '<h1>Created</h1>';
+          content.innerHTML = '<h1>Created</h1>';
           break;
         case 204:
-          content.innerhtml = '<h1>Updated</h1>';
+          content.innerHTML = '<h1>Updated</h1>';
           break;
         case 400:
           content.innerhtml = '<h1>Bad Request</h1>';
@@ -78,6 +40,49 @@
           break;
       }
     }
+
+    const addUser = async (e) => {
+      e.preventDefault();
+      const userName = nameForm.querySelector('#nameField').value;
+      const userAge = nameForm.querySelector('#ageField').value;
+      const userData = `name=${userName}&age=${userAge}`;
+
+      const methodName = nameForm.getAttribute('method');
+      const url = nameForm.getAttribute('action')
+      let response = await fetch(url, {
+        method: methodName,
+        body: userData,
+      });
+
+      //Handle response
+      updateStatus(response.status);
+
+      let obj = await response.json();
+
+      content.innerHTML = JSON.stringify(obj)
+      if(obj.message){
+        content.innerhtml += `<div>${obj.message}</div>`;
+      }
+    }
+
+    const getUser = async (e) => {
+      e.preventDefault();
+      const url = userForm.querySelector('#urlField').value;
+      const method = userForm.querySelector('#methodSelect').value;
+
+      let response = await fetch(url, {
+        method,
+      });
+
+      //Handle response
+      updateStatus(response.status);
+      let obj = await response.json;
+      if(obj){
+        content.innerhtml += `<div>${obj}</div>`;
+      }
+    }
+
+    
 
     window.onload = init;
   </script>

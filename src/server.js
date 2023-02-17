@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const query = require('querystring');
 
 const pageHandler = require('./pageResponses.js');
 const userHandler = require('./userResponses.js');
@@ -22,16 +23,37 @@ const urlStruct = {
   },
 };
 
+const handlePost = (request, response, parsedURL) => {
+  const body = [];
+  request.on('error', (err) => {
+    console.dir(err);
+    response.statusCode = 400;
+    response.end();
+  })
+  request.on('data', (chunk) => {
+    body.push(chunk);
+  });
+  request.on('end', () => {
+    const bodyString = Buffer.concat(body).toString();
+    const bodyParams = query.parse(bodyString);
+    urlStruct[request.method][parsedURL.pathname](request, response, bodyParams);
+  });
+};
+
 const onRequest = (request, response) => {
   const parsedURL = url.parse(request.url);
-  console.log(request.body);
+  console.log(parsedURL.pathname);
 
   if (!urlStruct[request.method]) {
     return urlStruct.HEAD['/notReal'](request, response);
   }
 
   if (urlStruct[request.method][parsedURL.pathname]) {
-    return urlStruct[request.method][parsedURL.pathname](request, response);
+    if (request.method === 'POST') {
+      return handlePost(request, response, parsedURL);
+    } else {
+      return urlStruct[request.method][parsedURL.pathname](request, response);
+    }
   }
   return urlStruct[request.method]['/notReal'](request, response);
 };
