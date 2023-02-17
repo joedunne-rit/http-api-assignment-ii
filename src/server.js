@@ -18,12 +18,13 @@ const urlStruct = {
     '/notReal': userHandler.notFoundHead,
   },
   POST: {
-    '/AddUser': userHandler.addUser,
+    '/addUser': userHandler.addUser,
   },
 };
 
 const onRequest = (request, response) => {
   const parsedURL = url.parse(request.url);
+  console.log(request.body);
 
   if (!urlStruct[request.method]) {
     return urlStruct.HEAD['/notReal'](request, response);

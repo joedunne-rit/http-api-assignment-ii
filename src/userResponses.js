@@ -3,12 +3,19 @@ const users = {};
 const getUsers = (request, response) => {
   // Return user list as json object
   response.writeHead(200, { 'Content-Type': 'application/json' });
-  response.write(users);
+  response.write(JSON.stringify(users));
   response.end();
 };
 
 const getUsersHead = (request, response) => {
   response.writeHead(200, users);
+  response.end();
+};
+
+// Function for returning addUser response
+const addUserResponse = (request, response, status, message) => {
+  response.writeHead(status, { 'Content-Type': 'application/json' });
+  response.write(JSON.stringify(message));
   response.end();
 };
 
@@ -19,14 +26,16 @@ const addUser = (request, response, newUser) => {
   };
   if (!newUser.name || !newUser.age) {
     responseMessage.id = 'missingParams';
-    return addUserResponse(request, response, 400, responseMessage);
+    addUserResponse(request, response, 400, responseMessage);
+    return;
   }
   // Check list of current users
   // If current user already exists, update their age
   if (users[newUser.name]) {
     users[newUser.name].age = newUser.age;
     responseMessage.message = 'User age updated';
-    return addUserResponse(request, response, 204, responseMessage);
+    addUserResponse(request, response, 204, responseMessage);
+    return;
   }
   // If user does not exist, create new user
   users[newUser.name] = {
@@ -34,20 +43,13 @@ const addUser = (request, response, newUser) => {
     age: newUser.age,
   };
   responseMessage.message = 'New user created';
-  return addUserResponse(request, response, 201, responseMessage);
-};
-
-// Function for returning addUser response
-const addUserResponse = (request, response, status, message) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
-  response.write(JSON.stringify(message));
-  response.end();
+  addUserResponse(request, response, 201, responseMessage);
 };
 
 // returns error message if page is not found
 const notFound = (request, response) => {
   response.writeHead(404, { 'Content-Type': 'application/json' });
-  errorMessage = {
+  const errorMessage = {
     message: 'The page you are looking for was not found',
     id: 'notFound',
   };
