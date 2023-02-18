@@ -29,7 +29,7 @@ const handlePost = (request, response, parsedURL) => {
     console.dir(err);
     response.statusCode = 400;
     response.end();
-  })
+  });
   request.on('data', (chunk) => {
     body.push(chunk);
   });
@@ -51,9 +51,8 @@ const onRequest = (request, response) => {
   if (urlStruct[request.method][parsedURL.pathname]) {
     if (request.method === 'POST') {
       return handlePost(request, response, parsedURL);
-    } else {
-      return urlStruct[request.method][parsedURL.pathname](request, response);
     }
+    return urlStruct[request.method][parsedURL.pathname](request, response);
   }
   return urlStruct[request.method]['/notReal'](request, response);
 };

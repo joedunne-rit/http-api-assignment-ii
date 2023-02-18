@@ -8,7 +8,7 @@ const getUsers = (request, response) => {
 };
 
 const getUsersHead = (request, response) => {
-  response.writeHead(200, users);
+  response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end();
 };
 

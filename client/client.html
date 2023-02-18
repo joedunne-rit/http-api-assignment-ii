@@ -30,13 +30,13 @@
           content.innerHTML = '<h1>Updated</h1>';
           break;
         case 400:
-          content.innerhtml = '<h1>Bad Request</h1>';
+          content.innerHTML = '<h1>Bad Request</h1>';
           break;
         case 404:
-          content.innerhtml = '<h1>Not Found</h1>';
+          content.innerHTML = '<h1>Not Found</h1>';
           break;
         default:
-          content.innerhtml = '<h1>Not Found</h1>';
+          content.innerHTML = '<h1>Not Found</h1>';
           break;
       }
     }
@@ -55,13 +55,13 @@
       });
 
       //Handle response
+      content.innerHTML = '';
       updateStatus(response.status);
 
       let obj = await response.json();
 
-      content.innerHTML = JSON.stringify(obj)
-      if(obj.message){
-        content.innerhtml += `<div>${obj.message}</div>`;
+      if(response.status != 204){
+        content.innerHTML += `<div>${obj.message}</div>`;
       }
     }
 
@@ -75,10 +75,14 @@
       });
 
       //Handle response
+      content.innerHTML = '';
       updateStatus(response.status);
-      let obj = await response.json;
-      if(obj){
-        content.innerhtml += `<div>${obj}</div>`;
+      let obj = await response.json();
+      if(obj.message){
+        content.innerHTML += `<div>${obj.message}</div>`;
+      } else {
+        content.innerHTML += `<div>${JSON.stringify(obj)}</div>`;
+        console.log(obj);
       }
     }
 
